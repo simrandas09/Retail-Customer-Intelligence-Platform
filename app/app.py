@@ -15,8 +15,10 @@ st.set_page_config(
 # LOAD DATA
 # -----------------------------------
 
-clean_df = pd.read_csv(
-    "data/cleaned/clean_retail.csv"
+clean_df.to_csv(
+    "data/cleaned/clean_retail.csv.zip",
+    index=False,
+    compression="zip"
 )
 
 rules = pd.read_csv(
