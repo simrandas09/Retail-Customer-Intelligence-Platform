@@ -16,11 +16,11 @@ st.set_page_config(
 # -----------------------------------
 
 clean_df = pd.read_csv(
-    "C:/Users/Dell/OneDrive/Desktop/Retail-Customer-Intelligence/data/cleaned/clean_retail.csv"
+    "data/cleaned/clean_retail.csv"
 )
 
 rules = pd.read_csv(
-    "C:/Users/Dell/OneDrive/Desktop/Retail-Customer-Intelligence/notebooks/association_rules.csv"
+    "data/cleaned/association_rules.csv"
 )
 
 # Convert rules columns to string
