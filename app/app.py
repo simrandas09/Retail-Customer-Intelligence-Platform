@@ -14,21 +14,19 @@ st.set_page_config(
 # -----------------------------------
 # LOAD DATA
 # -----------------------------------
-sample_df = clean_df.sample(
-    5000,
-    random_state=42
-)
 
-sample_df.to_csv(
-    "data/cleaned/clean_retail_sample.csv",
-    index=False
+clean_df = pd.read_csv(
+    "data/cleaned/clean_retail_sample.csv"
 )
 
 rules = pd.read_csv(
     "data/cleaned/association_rules.csv"
 )
 
-# Convert rules columns to string
+# -----------------------------------
+# RULES PREPROCESSING
+# -----------------------------------
+
 rules["antecedents"] = (
     rules["antecedents"]
     .astype(str)
@@ -67,7 +65,7 @@ st.sidebar.header(
 
 country = st.sidebar.selectbox(
     "Select Country",
-    sorted(clean_df["Country"].unique())
+    sorted(clean_df["Country"].dropna().unique())
 )
 
 # -----------------------------------
@@ -99,6 +97,7 @@ total_orders = (
 
 average_order_value = (
     total_revenue / total_orders
+    if total_orders != 0 else 0
 )
 
 # -----------------------------------
@@ -131,6 +130,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
 with tab1:
 
     # KPI CARDS
+
     col1, col2, col3, col4 = st.columns(4)
 
     col1.metric(
@@ -207,7 +207,7 @@ with tab1:
         use_container_width=True
     )
 
-    # HOURLY TREND
+    # HOURLY SALES
 
     st.subheader(
         "Purchase Trend by Hour"
@@ -264,7 +264,7 @@ with tab2:
         use_container_width=True
     )
 
-    # RFM SEGMENTATION
+    # RFM ANALYSIS
 
     st.subheader(
         "Customer Segmentation (RFM)"
@@ -301,8 +301,7 @@ with tab2:
     )
 
     rfm["F_Score"] = pd.qcut(
-        rfm["Frequency"]
-        .rank(method="first"),
+        rfm["Frequency"].rank(method="first"),
         4,
         labels=[1,2,3,4]
     )
@@ -317,7 +316,7 @@ with tab2:
     rfm["F_Score"] = rfm["F_Score"].astype(int)
     rfm["M_Score"] = rfm["M_Score"].astype(int)
 
-    # SEGMENT FUNCTION
+    # SEGMENTATION
 
     def segment_customer(row):
 
@@ -385,6 +384,7 @@ with tab3:
 
     product_list = (
         rules["antecedents"]
+        .dropna()
         .unique()
     )
 
@@ -395,7 +395,11 @@ with tab3:
 
     recommendations = rules[
         rules["antecedents"]
-        .str.contains(selected_product, case=False)
+        .str.contains(
+            selected_product,
+            case=False,
+            na=False
+        )
     ]
 
     if len(recommendations) > 0:
@@ -436,8 +440,20 @@ with tab4:
     )
 
     st.info(
-        "Forecasting section will be added in next phase."
+        "Forecasting dashboard will be integrated in next phase."
     )
+
+# -----------------------------------
+# DATASET PREVIEW
+# -----------------------------------
+
+st.subheader(
+    "Filtered Dataset Preview"
+)
+
+st.dataframe(
+    filtered_df.head(10)
+)
 
 # -----------------------------------
 # FOOTER
