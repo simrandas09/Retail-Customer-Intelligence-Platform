@@ -14,11 +14,14 @@ st.set_page_config(
 # -----------------------------------
 # LOAD DATA
 # -----------------------------------
+sample_df = clean_df.sample(
+    5000,
+    random_state=42
+)
 
-clean_df.to_csv(
-    "data/cleaned/clean_retail.csv.zip",
-    index=False,
-    compression="zip"
+sample_df.to_csv(
+    "data/cleaned/clean_retail_sample.csv",
+    index=False
 )
 
 rules = pd.read_csv(
