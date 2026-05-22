@@ -16,7 +16,7 @@ st.set_page_config(
 # -----------------------------------
 
 clean_df = pd.read_csv(
-    "data/cleaned/clean_retail.csv.zip",
+    "data/cleaned/clean_retail.zip",
     compression="zip"
 )
 
